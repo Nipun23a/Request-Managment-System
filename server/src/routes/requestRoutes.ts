@@ -22,3 +22,5 @@ router.post('/',createRequest);
 router.patch('/:id',updateRequest as any);
 // Delete a request by id
 router.delete('/:id',deleteRequest as any)
+
+export default router;

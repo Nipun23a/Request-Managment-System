@@ -1,7 +1,7 @@
 import RequestModel from "../models/Request";
 import { Request,Response } from "express";
 
-export const getAllRequest = async (req: Request, res: Response) => {
+export const getAllRequests = async (req: Request, res: Response) => {
     try{
         const requests = await RequestModel.find();
         res.json(requests);

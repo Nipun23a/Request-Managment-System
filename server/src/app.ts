@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/database';
 import { PORT } from './config/config';
+import router from './routes/requestRoutes';
+import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 
@@ -12,10 +14,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 //Routes
-app.get('/',(req,res) => {
-    res.send('Request Managment System API');
-});
+app.use('/api/requests',router)
 
+// Middleware
+app.use(errorHandler);
 
 //Connect to database and start server
 const startServer = async () => {
