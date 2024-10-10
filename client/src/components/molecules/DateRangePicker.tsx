@@ -3,13 +3,27 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Button } from '../atoms/TableButton';
 
-export const DateRangePicker: React.FC = () => {
-  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+interface DateRangePickerProps {
+  onDateRangeChange: (startDate: Date | undefined, endDate: Date | undefined) => void;
+}
+
+export const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateRangeChange }) => {
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined); // Use undefined instead of null
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined); // Use undefined instead of null
   const [showCalendar, setShowCalendar] = useState(false);
 
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
+  };
+
+  const handleDateChange = (dates: [Date | null, Date | null]) => {
+    const [start, end] = dates;
+    setStartDate(start || undefined); // Convert null to undefined
+    setEndDate(end || undefined); // Convert null to undefined
+    onDateRangeChange(start || undefined, end || undefined); // Convert null to undefined
+    if (start && end) {
+      setShowCalendar(false);
+    }
   };
 
   return (
@@ -36,20 +50,16 @@ export const DateRangePicker: React.FC = () => {
           />
         </svg>
       </Button>
-
       {showCalendar && (
-        <div className="absolute z-10 mt-2 bg-blue-100 p-4 border border-gray-300 rounded-lg shadow-lg navigation"> {/* Change bg-white to bg-blue-100 or any color */}
+        <div className="absolute z-10 mt-2 bg-blue-100 p-4 border border-gray-300 rounded-lg shadow-lg navigation">
           <DatePicker
             selected={startDate}
-            onChange={(dates) => {
-              const [start, end] = dates as [Date, Date];
-              setStartDate(start);
-              setEndDate(end);
-            }}
+            onChange={handleDateChange}
             startDate={startDate}
             endDate={endDate}
             selectsRange
             inline
+            shouldCloseOnSelect={false} // Keeps calendar open after selecting date
           />
         </div>
       )}

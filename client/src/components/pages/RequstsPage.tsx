@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { RequestTable } from '../organisms/RequestTable';
 import { RequestData } from '../../types/RequestTpes';
 import axios from 'axios';
@@ -14,35 +14,74 @@ export const RequestsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    status: '',
+    priority: '',
+    startDate: undefined as Date | undefined,
+    endDate: undefined as Date | undefined
+  });
 
-  const statusOptions = ['NEW', 'IN_PROGRESS', 'COMPLETED','DELAYED','ESCALATED','ON_HOLD'];
-  const priorityOptions = ['LOW', 'MEDIUM', 'HIGH','NORMAL','EMERGENCY'];
+  const statusOptions = ['NEW', 'IN_PROGRESS', 'COMPLETED', 'DELAYED', 'ESCALATED', 'ON_HOLD'];
+  const priorityOptions = ['LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'EMERGENCY'];
 
-  const handleSearch = async (searchTerm: string) => {
+  const applyFilters = useCallback(() => {
     setIsSearching(true);
-    try {
-      if (searchTerm.trim() === '') {
-        setFilteredRequests(requests);
-      } else {
-        const response = await axios.get<RequestData[]>(`http://localhost:5000/api/requests/search?term=${searchTerm}`);
-        setFilteredRequests(response.data);
-      }
-    } catch (error) {
-      console.error('Error searching requests:', error);
-      setFilteredRequests([]);
-    } finally {
-      setIsSearching(false);
+    let result = requests;
+
+    if (filters.searchTerm) {
+      const searchLower = filters.searchTerm.toLowerCase();
+      result = result.filter(request => 
+        request.requestId.toLowerCase().includes(searchLower) ||
+        request.service.toLowerCase().includes(searchLower) ||
+        request.department.toLowerCase().includes(searchLower) ||
+        request.requestedBy.toLowerCase().includes(searchLower) ||
+        request.assignedTo.toLowerCase().includes(searchLower)
+      );
     }
+
+    if (filters.status) {
+      result = result.filter(request => request.status === filters.status);
+    }
+
+    if (filters.priority) {
+      result = result.filter(request => request.priority === filters.priority);
+    }
+
+    if (filters.startDate && filters.endDate) {
+      const start = new Date(filters.startDate);
+      const end = new Date(filters.endDate);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+
+      result = result.filter(request => {
+        const requestDate = new Date(request.createdOn);
+        return requestDate >= start && requestDate <= end;
+      });
+    }
+
+    setFilteredRequests(result);
+    setIsSearching(false);
+  }, [requests, filters]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  const handleSearch = (searchTerm: string) => {
+    setFilters(prev => ({ ...prev, searchTerm }));
   };
 
-  const handleStatusSelect = (selectedStatus: string) => {
-    const filtered = requests.filter(req => req.status === selectedStatus);
-    setFilteredRequests(filtered);
+  const handleStatusSelect = (status: string) => {
+    setFilters(prev => ({ ...prev, status }));
   };
 
-  const handlePrioritySelect = (selectedPriority: string) => {
-    const filtered = requests.filter(req => req.priority === selectedPriority);
-    setFilteredRequests(filtered);
+  const handlePrioritySelect = (priority: string) => {
+    setFilters(prev => ({ ...prev, priority }));
+  };
+
+  const handleDateRangeChange = (startDate: Date | undefined, endDate: Date | undefined) => {
+    setFilters(prev => ({ ...prev, startDate, endDate }));
   };
 
   const handleUpdateRequest = async (updatedRequest: RequestData) => {
@@ -50,7 +89,6 @@ export const RequestsPage: React.FC = () => {
       const response = await axios.put(`http://localhost:5000/api/requests/${updatedRequest._id}`, updatedRequest);
       const updatedRequests = requests.map(req => req._id === updatedRequest._id ? response.data : req);
       setRequests(updatedRequests);
-      setFilteredRequests(updatedRequests);
     } catch (error) {
       console.error('Error updating request:', error);
     }
@@ -61,7 +99,6 @@ export const RequestsPage: React.FC = () => {
       try {
         const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
         setRequests(response.data);
-        setFilteredRequests(response.data);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch requests. Please try again later.');
@@ -86,7 +123,7 @@ export const RequestsPage: React.FC = () => {
           <SearchInput onSearch={handleSearch} />
         </div>
         <div className="flex-grow min-w-[200px]">
-          <DateRangePicker />
+          <DateRangePicker onDateRangeChange={handleDateRangeChange} />
         </div>
         <div className="flex-grow min-w-[150px]">
           <Dropdown label="Status" options={statusOptions} onSelect={handleStatusSelect} />
