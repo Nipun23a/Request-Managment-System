@@ -129,7 +129,8 @@ export const UpdateRequestForm: React.FC<UpdateRequestFormProps> = ({ request, o
           <Select 
             label="Status" 
             name="status"
-            options={['NEW', 'IN_PROGRESS', 'ON_HOLD', 'REJECTED', 'CANCELLED']} 
+            options={['NEW', 'IN_PROGRESS', 'COMPLETED','ON_HOLD','ESCALATED','DELAYED']} 
+
             required
             value={formData.status}
             onChange={handleChange}

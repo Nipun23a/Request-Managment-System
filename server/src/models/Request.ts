@@ -30,7 +30,7 @@ const RequestSchema: Schema = new Schema({
   service: { type: String, required: true },
   status: {
     type: String,
-    enum: ['NEW', 'IN_PROGRESS', 'ON_HOLD', 'REJECTED', 'CANCELLED'],
+    enum: ['NEW', 'IN_PROGRESS', 'ON_HOLD', 'ESCALATED', 'COMPLETED','DELAYED'],
     default: 'NEW'
   },
   priority: {
