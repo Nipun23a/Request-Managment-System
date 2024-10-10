@@ -10,7 +10,7 @@ interface NavItemProps {
 }
 
 
-export const Navitem: React.FC<NavItemProps> = ({to,icon,label}) => (
+export const NavItem: React.FC<NavItemProps> = ({to,icon,label}) => (
     <Link to = {to} className="hover:text-gray-300 flex items-center">
         <Icon name={icon} className="mr-2"/>
         <Text>{label}</Text>
