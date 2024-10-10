@@ -6,7 +6,7 @@ interface CircleProps {
 }
 
 export const Circle: React.FC<CircleProps> = ({ color, children }) => (
-  <div className={`rounded-full w-20 h-20 flex items-center justify-center ${color}`}>
+  <div className={`rounded-full w-40 h-40 flex items-center justify-center ${color}`}>
     {children}
   </div>
 );
