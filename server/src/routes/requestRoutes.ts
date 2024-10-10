@@ -19,7 +19,7 @@ router.get('/:id',getRequestById as any)
 router.post('/',createRequest);
 
 // Update a request by id
-router.patch('/:id',updateRequest as any);
+router.put('/:id',updateRequest as any);
 // Delete a request by id
 router.delete('/:id',deleteRequest as any)
 

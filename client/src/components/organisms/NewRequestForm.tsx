@@ -1,34 +1,130 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Input } from '../atoms/Input';
 import { Select } from '../atoms/Select';
 import { Button } from '../atoms/FormButton';
-import { FileUpload } from '../molecules/FileUpload';
+
+interface FormData {
+  floor: string;
+  roomUnit: string;
+  block: string;
+  requestedBy: string;
+  phoneNumber: string;
+  location: string;
+  service: string;
+  department: string;
+}
 
 export const NewRequestForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState<FormData>({
+    floor: '',
+    roomUnit: '',
+    block: '',
+    requestedBy: '',
+    phoneNumber: '',
+    location: '',
+    service: '',
+    department: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    onClose();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/requests', formData);
+      console.log('Request created:', response.data);
+      onClose();
+    } catch (error) {
+      console.error('Error creating request:', error);
+      setError('Failed to create request. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Select label="Floor" options={['1st Floor', '2nd Floor']} required />
-        <Select label="Room / Unit" options={['Room 101', 'Room 102']} required />
+        <Select 
+          label="Floor" 
+          name="floor"
+          options={['1st Floor', '2nd Floor']} 
+          required 
+          value={formData.floor}
+          onChange={handleChange}
+        />
+        <Input 
+          label="Room / Unit" 
+          name="roomUnit"
+          type="text"
+          required 
+          value={formData.roomUnit}
+          onChange={handleChange}
+        />
       </div>
-      <Select label="Block" options={['Block A', 'Block B']} required />
-      <Select label="Guest Name" options={['John Doe', 'Jane Smith']} />
-      <Input label="Phone Number" type="tel" placeholder="Enter Phone Number" />
-      <Select label="Service" options={['Cleaning', 'Maintenance']} />
-      <div className="grid grid-cols-2 gap-4">
-        <Select label="Department" options={['Housekeeping', 'Engineering']} />
-        <Select label="Priority" options={['Low', 'Medium', 'High']} />
-      </div>
-      <FileUpload />
+      <Select 
+        label="Block" 
+        name="block"
+        options={['Block A', 'Block B']} 
+        required 
+        value={formData.block}
+        onChange={handleChange}
+      />
+      <Input 
+        label="Requested By" 
+        name="requestedBy"
+        type="text"
+        required
+        value={formData.requestedBy}
+        onChange={handleChange}
+      />
+      <Input 
+        label="Phone Number" 
+        name="phoneNumber"
+        type="tel" 
+        required
+        value={formData.phoneNumber}
+        onChange={handleChange}
+      />
+      <Input 
+        label="Location" 
+        name="location"
+        type="text" 
+        required
+        value={formData.location}
+        onChange={handleChange}
+      />
+      <Select 
+        label="Service" 
+        name="service"
+        options={['Cleaning', 'Maintenance', 'Room Service']} 
+        required
+        value={formData.service}
+        onChange={handleChange}
+      />
+      <Select 
+        label="Department" 
+        name="department"
+        options={['Housekeeping', 'Engineering', 'Food & Beverage']} 
+        required
+        value={formData.department}
+        onChange={handleChange}
+      />
+      {error && <p className="text-red-500">{error}</p>}
       <div className="flex justify-end space-x-4">
-        <Button variant="secondary" onClick={onClose}>Cancel</Button>
-        <Button variant="primary" type="submit">Submit</Button>
+        <Button variant="secondary" onClick={onClose} disabled={isLoading}>Cancel</Button>
+        <Button variant="primary" type="submit" disabled={isLoading}>
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </Button>
       </div>
     </form>
   );

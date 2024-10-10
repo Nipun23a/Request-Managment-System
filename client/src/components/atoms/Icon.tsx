@@ -4,6 +4,8 @@ import { IoHomeOutline,IoCloseOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
 import { FiUser } from "react-icons/fi";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { CiSearch } from "react-icons/ci";
 import { FaHome, FaList, FaComments, FaChartBar, FaUser, FaCog, FaChevronDown, FaMoon, FaBell,FaPlus } from 'react-icons/fa';
 
 interface IconProps {
@@ -22,7 +24,9 @@ const icons: { [key: string]: IconType } = {
   'moon': FaMoon,
   'bell': FaBell,
   'plus': FaPlus,
-  'close': IoCloseOutline
+  'close': IoCloseOutline,
+  'search': CiSearch,
+  'eye': MdOutlineRemoveRedEye
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
