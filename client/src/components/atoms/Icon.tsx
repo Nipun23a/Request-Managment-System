@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconType } from 'react-icons';
-import { IoHomeOutline } from "react-icons/io5";
+import { IoHomeOutline,IoCloseOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
 import { FiUser } from "react-icons/fi";
@@ -22,6 +22,7 @@ const icons: { [key: string]: IconType } = {
   'moon': FaMoon,
   'bell': FaBell,
   'plus': FaPlus,
+  'close': IoCloseOutline
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
