@@ -9,6 +9,7 @@ import {FaChevronDown, FaRegSun } from 'react-icons/fa';
 import { PiMoonStars } from "react-icons/pi";
 import { LuBellDot } from "react-icons/lu";
 import { IoAdd,IoEyeOutline } from "react-icons/io5";
+import { GoSignOut } from "react-icons/go";
 
 
 
@@ -31,7 +32,8 @@ const icons: { [key: string]: IconType } = {
   'close': IoCloseOutline,
   'search': CiSearch,
   'eye': IoEyeOutline,
-  'sun': FaRegSun
+  'sun': FaRegSun,
+  'sign-out-alt':GoSignOut
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
