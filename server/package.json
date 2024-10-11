@@ -2,9 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Backend server for Request Management System",
-  "main": "dist/app.js",
+  "main": "build/app.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node BUILD/app.js",
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
