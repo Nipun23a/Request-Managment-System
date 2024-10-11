@@ -15,7 +15,12 @@ interface FormData {
   department: string;
 }
 
-export const NewRequestForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+interface NewRequestFormProps {
+  onClose: () => void;
+  onRequestAdded: () => void; // New prop for handling refresh
+}
+
+export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onClose, onRequestAdded }) => {
   const [formData, setFormData] = useState<FormData>({
     floor: '',
     roomUnit: '',
@@ -38,10 +43,10 @@ export const NewRequestForm: React.FC<{ onClose: () => void }> = ({ onClose }) =
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await axios.post('http://localhost:5000/api/requests', formData);
       console.log('Request created:', response.data);
+      onRequestAdded(); // Call the refresh function
       onClose();
     } catch (error) {
       console.error('Error creating request:', error);
@@ -54,67 +59,67 @@ export const NewRequestForm: React.FC<{ onClose: () => void }> = ({ onClose }) =
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Select 
-          label="Floor" 
+        <Select
+          label="Floor"
           name="floor"
-          options={['1st Floor', '2nd Floor']} 
-          required 
+          options={['1st Floor', '2nd Floor']}
+          required
           value={formData.floor}
           onChange={handleChange}
         />
-        <Input 
-          label="Room / Unit" 
+        <Input
+          label="Room / Unit"
           name="roomUnit"
           type="text"
-          required 
+          required
           value={formData.roomUnit}
           onChange={handleChange}
         />
       </div>
-      <Select 
-        label="Block" 
+      <Select
+        label="Block"
         name="block"
-        options={['Block A', 'Block B']} 
-        required 
+        options={['Block A', 'Block B']}
+        required
         value={formData.block}
         onChange={handleChange}
       />
-      <Input 
-        label="Requested By" 
+      <Input
+        label="Requested By"
         name="requestedBy"
         type="text"
         required
         value={formData.requestedBy}
         onChange={handleChange}
       />
-      <Input 
-        label="Phone Number" 
+      <Input
+        label="Phone Number"
         name="phoneNumber"
-        type="tel" 
+        type="tel"
         required
         value={formData.phoneNumber}
         onChange={handleChange}
       />
-      <Input 
-        label="Location" 
+      <Input
+        label="Location"
         name="location"
-        type="text" 
+        type="text"
         required
         value={formData.location}
         onChange={handleChange}
       />
-      <Select 
-        label="Service" 
+      <Select
+        label="Service"
         name="service"
-        options={['Cleaning', 'Maintenance', 'Room Service']} 
+        options={['Cleaning', 'Maintenance', 'Room Service']}
         required
         value={formData.service}
         onChange={handleChange}
       />
-      <Select 
-        label="Department" 
+      <Select
+        label="Department"
         name="department"
-        options={['Housekeeping', 'Engineering', 'Food & Beverage']} 
+        options={['Housekeeping', 'Engineering', 'Food & Beverage']}
         required
         value={formData.department}
         onChange={handleChange}

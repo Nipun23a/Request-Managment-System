@@ -6,9 +6,10 @@ import { NewRequestForm } from '../organisms/NewRequestForm';
 interface NewRequestModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRequestAdded: () => void; // New prop for handling refresh
 }
 
-export const NewRequestModal: React.FC<NewRequestModalProps> = ({ isOpen, onClose }) => (
+export const NewRequestModal: React.FC<NewRequestModalProps> = ({ isOpen, onClose, onRequestAdded }) => (
   <AnimatePresence>
     {isOpen && (
       <>
@@ -34,7 +35,10 @@ export const NewRequestModal: React.FC<NewRequestModalProps> = ({ isOpen, onClos
                 </button>
               </div>
               <div className="p-6">
-                <NewRequestForm onClose={onClose} />
+                <NewRequestForm 
+                  onClose={onClose} 
+                  onRequestAdded={onRequestAdded} // Pass the onRequestAdded prop to NewRequestForm
+                />
               </div>
             </div>
           </div>

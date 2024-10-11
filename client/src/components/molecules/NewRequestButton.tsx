@@ -3,12 +3,16 @@ import { Button } from '../atoms/Button';
 import { Icon } from '../atoms/Icon';
 import { NewRequestModal } from './NewRequestModal';
 
-export const NewRequestButton: React.FC = () => {
+interface NewRequestButtonProps {
+  onRequestAdded: () => void;
+}
+
+export const NewRequestButton: React.FC<NewRequestButtonProps> = ({ onRequestAdded }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <Button 
+      <Button
         className="bg-[#830823] text-white hover:bg-[#9a0a2a]"
         onClick={() => setIsModalOpen(true)}
       >
@@ -17,7 +21,14 @@ export const NewRequestButton: React.FC = () => {
           New Request
         </span>
       </Button>
-      <NewRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <NewRequestModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        onRequestAdded={() => {
+          onRequestAdded();
+          setIsModalOpen(false);
+        }}
+      />
     </>
   );
 };

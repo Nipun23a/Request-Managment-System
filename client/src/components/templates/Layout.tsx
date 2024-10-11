@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Header } from '../organisms/Header';
 import { RequestSummary } from '../organisms/RequestSummary';
@@ -14,20 +14,22 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Fetch request data when the component mounts
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests'); 
-        setRequests(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch requests. Please try again later.');
-        setLoading(false);
-      }
-    };
-    fetchRequests();
+  const fetchRequests = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
+      setRequests(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch requests. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
 
   // Calculate request counts for different statuses
   const newRequestsCount = requests.filter(req => req.status === 'NEW').length;
@@ -55,6 +57,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 delayedRequestsCount={delayedRequestsCount}
                 escalatedRequestsCount={escalatedRequestsCount}
                 onHoldRequestsCount={onHoldRequestsCount}
+                onRequestAdded={fetchRequests}
               />
             </div>
           </div>
