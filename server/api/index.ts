@@ -7,8 +7,19 @@ import { errorHandler } from './middleware/errorHandler';
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'https://request-managment-system.vercel.app',
+  'http://localhost:3000',
+];
+
 app.use(cors({
-  origin: 'https://request-managment-system.vercel.app' 
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, origin);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
