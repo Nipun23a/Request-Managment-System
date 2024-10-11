@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Backend server for Request Management System",
-  "main": "build/app.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node BUILD/app.js",
-    "dev": "nodemon --exec ts-node src/app.ts",
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "echo \"No tests specified yet\" && exit 0"

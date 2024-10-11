@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Header } from '../organisms/Header';
 import { RequestSummary } from '../organisms/RequestSummary';
 import { RequestData } from '../../types/RequestTpes'; // Assuming you have a type for request data
+import { API_BASE_URL } from '../../utils/api';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,7 +18,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const fetchRequests = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
+      const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
       setRequests(response.data);
       setError(null);
     } catch (err) {

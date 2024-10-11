@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Input } from '../atoms/Input';
 import { Select } from '../atoms/Select';
 import { Button } from '../atoms/FormButton';
-import { toast } from 'react-toastify'; // Import toast
+import { toast } from 'react-toastify'; // Import toast\
+import { API_BASE_URL } from '../../utils/api';
 
 interface FormData {
   floor: string;
@@ -45,15 +46,15 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onClose, onReque
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/requests', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/requests`, formData);
       console.log('Request created:', response.data);
-      onRequestAdded(); // Call the refresh function
-      toast.success('Request created successfully');  // Show success toast
+      onRequestAdded();
+      toast.success('Request created successfully');
       onClose();
     } catch (error) {
       console.error('Error creating request:', error);
       setError('Failed to create request. Please try again.');
-      toast.error('Failed to create request');  // Show error toast
+      toast.error('Failed to create request');
     } finally {
       setIsLoading(false);
     }

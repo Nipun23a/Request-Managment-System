@@ -7,6 +7,7 @@ import { DateRangePicker } from '../molecules/DateRangePicker';
 import { Dropdown } from '../molecules/Dropdown';
 import { Button } from '../atoms/TableButton';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_BASE_URL } from '../../utils/api';
 
 export const RequestsPage: React.FC = () => {
   const [requests, setRequests] = useState<RequestData[]>([]);
@@ -27,7 +28,7 @@ export const RequestsPage: React.FC = () => {
 
   const fetchRequests = useCallback(async () => {
     try {
-      const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
+      const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
       setRequests(response.data);
       setLoading(false);
     } catch (err) {
@@ -99,20 +100,19 @@ export const RequestsPage: React.FC = () => {
 
   const handleUpdateRequest = async (updatedRequest: RequestData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/requests/${updatedRequest._id}`, updatedRequest);
+      const response = await axios.put(`${API_BASE_URL}/api/requests/${updatedRequest._id}`, updatedRequest);
       const updatedRequests = requests.map(req => (req._id === updatedRequest._id ? response.data : req));
       setRequests(updatedRequests);
-      applyFilters(); // Apply filters to update the displayed data
+      applyFilters();
     } catch (error) {
       console.error('Error updating request:', error);
     }
   };
-
+  
   const handleDeleteRequest = async (deleteRequest: RequestData) => {
     try {
-      await axios.delete(`http://localhost:5000/api/requests/${deleteRequest._id}`);
-      // Refetch the requests after successful deletion
-      await fetchRequests();  // Auto-fetch requests after deletion
+      await axios.delete(`${API_BASE_URL}/api/requests/${deleteRequest._id}`);
+      await fetchRequests();
     } catch (error) {
       console.error('Error deleting request:', error);
     }

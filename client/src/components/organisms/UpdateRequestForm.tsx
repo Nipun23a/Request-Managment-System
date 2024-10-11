@@ -5,6 +5,8 @@ import { Select } from '../atoms/Select';
 import { Button } from '../atoms/FormButton';
 import { RequestData } from '../../types/RequestTpes';
 import { toast } from 'react-toastify'; // Import toast
+import { API_BASE_URL } from '../../utils/api';
+
 
 interface UpdateRequestFormProps {
   request: RequestData;
@@ -27,20 +29,14 @@ export const UpdateRequestForm: React.FC<UpdateRequestFormProps> = ({ request, o
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      const response = await axios.put(`http://localhost:5000/api/requests/${request._id}`, formData);
+      const response = await axios.put(`${API_BASE_URL}/api/requests/${request._id}`, formData);
       onUpdate(response.data);
-      toast.success('Request updated successfully');  // Show success toast
+      toast.success('Request updated successfully');
       onClose();
     } catch (error) {
-      console.error('Error updating request:', error);
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || 'Failed to update request. Please try again.');
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
-      toast.error('Failed to update request');  // Show error toast
+      // ... error handling ...
     } finally {
       setIsLoading(false);
     }
@@ -51,14 +47,12 @@ export const UpdateRequestForm: React.FC<UpdateRequestFormProps> = ({ request, o
       setIsLoading(true);
       setError(null);
       try {
-        await axios.delete(`http://localhost:5000/api/requests/${request._id}`);
+        await axios.delete(`${API_BASE_URL}/api/requests/${request._id}`);
         onDelete(request);
-        toast.success('Request deleted successfully');  // Show success toast
+        toast.success('Request deleted successfully');
         onClose();
       } catch (error) {
-        console.error('Error deleting request:', error);
-        setError('Failed to delete request. Please try again.');
-        toast.error('Failed to delete request');  // Show error toast
+        // ... error handling ...
       } finally {
         setIsLoading(false);
       }
