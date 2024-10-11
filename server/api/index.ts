@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*'
+  origin: 'https://request-managment-system.vercel.app' 
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
