@@ -22,7 +22,7 @@ export const RequestSummary: React.FC<RequestSummaryProps> = ({
       <NewRequestButton />
     </div>
     <div className='circle-section flex flex-wrap justify-center lg:justify-end gap-4'>
-      <StatusCircle count={newRequestsCount} label="New Requests" color="bg-pink-300 dark:bg-pink-700 transition-colors duration-500 ease-in-out" />
+      <StatusCircle count={newRequestsCount} label="New Requests" color="bg-pink-300 dark:bg-pink-700 transition-colors duration-500 ease-in-out " />
       <StatusCircle count={delayedRequestsCount} label="Delayed Requests" color="bg-green-300 dark:bg-green-700 transition-colors duration-500 ease-in-out" />
       <StatusCircle count={escalatedRequestsCount} label="Escalated Requests" color="bg-blue-300 dark:bg-blue-700 transition-colors duration-500 ease-in-out" />
       <StatusCircle count={onHoldRequestsCount} label="On Hold Requests" color="bg-purple-300 dark:bg-purple-700 transition-colors duration-500 ease-in-out" />
