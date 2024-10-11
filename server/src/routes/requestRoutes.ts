@@ -4,7 +4,8 @@ import {
     getRequestById,
     createRequest,
     updateRequest,
-    deleteRequest
+    deleteRequest,
+    searchRequests,
 } from '../controllers/requestController';
 
 const router = express.Router();
@@ -22,5 +23,7 @@ router.post('/',createRequest);
 router.put('/:id',updateRequest as any);
 // Delete a request by id
 router.delete('/:id',deleteRequest as any)
+
+router.get('/search', searchRequests as any);
 
 export default router;

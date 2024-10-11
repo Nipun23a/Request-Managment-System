@@ -36,9 +36,9 @@ export const TableRow: React.FC<TableRowProps> = ({ data, index, onViewEdit }) =
 const getStatusColor = (status: string) => {
   const colors: {[key: string]: string} = {
     'NEW': 'bg-yellow-200 text-yellow-800',
-    'IN PROGRESS': 'bg-green-200 text-green-800',
+    'IN_PROGRESS': 'bg-green-200 text-green-800',
     'COMPLETED': 'bg-blue-200 text-blue-800',
-    'ON HOLD': 'bg-purple-200 text-purple-800',
+    'ON_HOLD': 'bg-purple-200 text-purple-800',
     'ESCALATED': 'bg-red-200 text-red-800',
     'DELAYED': 'bg-orange-200 text-orange-800',
   };
