@@ -3,10 +3,14 @@ import { IconType } from 'react-icons';
 import { IoHomeOutline,IoCloseOutline } from "react-icons/io5";
 import { BiMessageDetail } from "react-icons/bi";
 import { CgNotes } from "react-icons/cg";
-import { FiUser } from "react-icons/fi";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSearch } from "react-icons/ci";
-import { FaHome, FaList, FaComments, FaChartBar, FaUser, FaCog, FaChevronDown, FaMoon, FaBell,FaPlus } from 'react-icons/fa';
+import { FiUser,FiSettings } from "react-icons/fi";
+import { CiSearch,CiBoxList } from "react-icons/ci";
+import {FaChevronDown, FaRegSun } from 'react-icons/fa';
+import { PiMoonStars } from "react-icons/pi";
+import { LuBellDot } from "react-icons/lu";
+import { IoAdd,IoEyeOutline } from "react-icons/io5";
+
+
 
 interface IconProps {
   name: string;
@@ -15,18 +19,19 @@ interface IconProps {
 
 const icons: { [key: string]: IconType } = {
   'tachometer-alt': IoHomeOutline,
-  'list': BiMessageDetail,
-  'comments': FaComments,
-  'chart-bar': FaChartBar,
+  'list': CiBoxList,
+  'comments': BiMessageDetail,
+  'chart-bar': CgNotes,
   'user': FiUser,
-  'cog': FaCog,
+  'cog': FiSettings,
   'chevron-down': FaChevronDown,
-  'moon': FaMoon,
-  'bell': FaBell,
-  'plus': FaPlus,
+  'moon': PiMoonStars,
+  'bell': LuBellDot,
+  'plus': IoAdd,
   'close': IoCloseOutline,
   'search': CiSearch,
-  'eye': MdOutlineRemoveRedEye
+  'eye': IoEyeOutline,
+  'sun': FaRegSun
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = '' }) => {
