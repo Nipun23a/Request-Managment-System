@@ -10,20 +10,21 @@
       },
       {
         "src": "server/package.json",
-        "use": "@vercel/node",
-        "config": {
-          "outputDirectory": "server/dist"  // Specify the output directory for the server
-        }
+        "use": "@vercel/node"
       }
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
-        "dest": "/server/dist/app.js"
+        "src": "/api/requests/(.*)",  
+        "dest": "/server/dist/app.js"  
+      },
+      {
+        "src": "/api/(.*)",  
+        "dest": "/server/dist/app.js"  
       },
       {
         "src": "/(.*)",
-        "dest": "/client/build/$1"
+        "dest": "/client/build/$1" 
       }
     ]
   }
