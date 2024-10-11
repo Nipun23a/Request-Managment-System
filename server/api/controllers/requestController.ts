@@ -7,6 +7,7 @@ export const getAllRequests = async (req: Request, res: Response) => {
         res.json(requests);
     } catch (error) {
         res.status(500).json({message:'Error fetching requests', error});
+        console.error('Error fetching requests:', error);
     }
 };
 
