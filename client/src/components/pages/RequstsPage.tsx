@@ -19,19 +19,31 @@ export const RequestsPage: React.FC = () => {
     status: '',
     priority: '',
     startDate: undefined as Date | undefined,
-    endDate: undefined as Date | undefined
+    endDate: undefined as Date | undefined,
   });
 
   const statusOptions = ['NEW', 'IN_PROGRESS', 'COMPLETED', 'DELAYED', 'ESCALATED', 'ON_HOLD'];
   const priorityOptions = ['LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'EMERGENCY'];
 
+  const fetchRequests = useCallback(async () => {
+    try {
+      const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
+      setRequests(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch requests. Please try again later.');
+      setLoading(false);
+    }
+  }, []);
+
+  // Filtering logic
   const applyFilters = useCallback(() => {
     setIsSearching(true);
     let result = requests;
 
     if (filters.searchTerm) {
       const searchLower = filters.searchTerm.toLowerCase();
-      result = result.filter(request => 
+      result = result.filter(request =>
         request.requestId.toLowerCase().includes(searchLower) ||
         request.service.toLowerCase().includes(searchLower) ||
         request.department.toLowerCase().includes(searchLower) ||
@@ -64,6 +76,7 @@ export const RequestsPage: React.FC = () => {
     setIsSearching(false);
   }, [requests, filters]);
 
+  // Re-apply filters on filter change
   useEffect(() => {
     applyFilters();
   }, [applyFilters]);
@@ -87,26 +100,28 @@ export const RequestsPage: React.FC = () => {
   const handleUpdateRequest = async (updatedRequest: RequestData) => {
     try {
       const response = await axios.put(`http://localhost:5000/api/requests/${updatedRequest._id}`, updatedRequest);
-      const updatedRequests = requests.map(req => req._id === updatedRequest._id ? response.data : req);
+      const updatedRequests = requests.map(req => (req._id === updatedRequest._id ? response.data : req));
       setRequests(updatedRequests);
+      applyFilters(); // Apply filters to update the displayed data
     } catch (error) {
       console.error('Error updating request:', error);
     }
   };
 
+  const handleDeleteRequest = async (deleteRequest: RequestData) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/requests/${deleteRequest._id}`);
+      // Refetch the requests after successful deletion
+      await fetchRequests();  // Auto-fetch requests after deletion
+    } catch (error) {
+      console.error('Error deleting request:', error);
+    }
+  };
+
+  // Fetch requests on initial load
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get<RequestData[]>('http://localhost:5000/api/requests');
-        setRequests(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch requests. Please try again later.');
-        setLoading(false);
-      }
-    };
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
 
   if (loading) {
     return <div className="text-center py-4">Loading...</div>;
@@ -162,7 +177,11 @@ export const RequestsPage: React.FC = () => {
         transition={{ duration: 0.2 }}
       >
         {filteredRequests.length > 0 ? (
-          <RequestTable data={filteredRequests} onUpdateRequest={handleUpdateRequest} />
+          <RequestTable
+            data={filteredRequests}
+            onUpdateRequest={handleUpdateRequest}
+            onDeleteRequest={handleDeleteRequest}
+          />
         ) : (
           <div className="text-center py-4">No requests found.</div>
         )}

@@ -7,9 +7,10 @@ import { RequestData } from '../../types/RequestTpes';
 interface RequestTableProps {
   data: RequestData[];
   onUpdateRequest: (updatedRequest: RequestData) => void;
+  onDeleteRequest : (delteRequest: RequestData) => void;
 }
 
-export const RequestTable: React.FC<RequestTableProps> = ({ data, onUpdateRequest }) => {
+export const RequestTable: React.FC<RequestTableProps> = ({ data, onUpdateRequest, onDeleteRequest }) => {
   const [selectedRequest, setSelectedRequest] = useState<RequestData | null>(null);
 
   const handleViewEdit = (request: RequestData) => {
@@ -37,6 +38,7 @@ export const RequestTable: React.FC<RequestTableProps> = ({ data, onUpdateReques
           request={selectedRequest}
           onClose={handleCloseForm}
           onUpdate={onUpdateRequest}
+          onDelete={onDeleteRequest}
         />
       )}
     </div>

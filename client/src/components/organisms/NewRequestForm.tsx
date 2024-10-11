@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Input } from '../atoms/Input';
 import { Select } from '../atoms/Select';
 import { Button } from '../atoms/FormButton';
+import { toast } from 'react-toastify'; // Import toast
 
 interface FormData {
   floor: string;
@@ -47,10 +48,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onClose, onReque
       const response = await axios.post('http://localhost:5000/api/requests', formData);
       console.log('Request created:', response.data);
       onRequestAdded(); // Call the refresh function
+      toast.success('Request created successfully');  // Show success toast
       onClose();
     } catch (error) {
       console.error('Error creating request:', error);
       setError('Failed to create request. Please try again.');
+      toast.error('Failed to create request');  // Show error toast
     } finally {
       setIsLoading(false);
     }
@@ -59,71 +62,15 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onClose, onReque
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <Select
-          label="Floor"
-          name="floor"
-          options={['1st Floor', '2nd Floor']}
-          required
-          value={formData.floor}
-          onChange={handleChange}
-        />
-        <Input
-          label="Room / Unit"
-          name="roomUnit"
-          type="text"
-          required
-          value={formData.roomUnit}
-          onChange={handleChange}
-        />
+        <Select label="Floor" name="floor" options={['1st Floor', '2nd Floor']} required value={formData.floor} onChange={handleChange} />
+        <Input label="Room / Unit" name="roomUnit" type="text" required value={formData.roomUnit} onChange={handleChange} />
       </div>
-      <Select
-        label="Block"
-        name="block"
-        options={['Block A', 'Block B']}
-        required
-        value={formData.block}
-        onChange={handleChange}
-      />
-      <Input
-        label="Requested By"
-        name="requestedBy"
-        type="text"
-        required
-        value={formData.requestedBy}
-        onChange={handleChange}
-      />
-      <Input
-        label="Phone Number"
-        name="phoneNumber"
-        type="tel"
-        required
-        value={formData.phoneNumber}
-        onChange={handleChange}
-      />
-      <Input
-        label="Location"
-        name="location"
-        type="text"
-        required
-        value={formData.location}
-        onChange={handleChange}
-      />
-      <Select
-        label="Service"
-        name="service"
-        options={['Cleaning', 'Maintenance', 'Room Service']}
-        required
-        value={formData.service}
-        onChange={handleChange}
-      />
-      <Select
-        label="Department"
-        name="department"
-        options={['Housekeeping', 'Engineering', 'Food & Beverage']}
-        required
-        value={formData.department}
-        onChange={handleChange}
-      />
+      <Select label="Block" name="block" options={['Block A', 'Block B']} required value={formData.block} onChange={handleChange} />
+      <Input label="Requested By" name="requestedBy" type="text" required value={formData.requestedBy} onChange={handleChange} />
+      <Input label="Phone Number" name="phoneNumber" type="tel" required value={formData.phoneNumber} onChange={handleChange} />
+      <Input label="Location" name="location" type="text" required value={formData.location} onChange={handleChange} />
+      <Select label="Service" name="service" options={['Cleaning', 'Maintenance', 'Room Service']} required value={formData.service} onChange={handleChange} />
+      <Select label="Department" name="department" options={['Housekeeping', 'Engineering', 'Food & Beverage']} required value={formData.department} onChange={handleChange} />
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex justify-end space-x-4">
         <Button variant="secondary" onClick={onClose} disabled={isLoading}>Cancel</Button>
