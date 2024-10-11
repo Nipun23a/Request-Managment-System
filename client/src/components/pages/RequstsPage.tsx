@@ -124,7 +124,12 @@ export const RequestsPage: React.FC = () => {
   }, [fetchRequests]);
 
   if (loading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center py-4">
+        <div className="loading-spinner" />
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
   }
 
   if (error) {
