@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { connectDB } from '../config/database';
-import router from '../routes/requestRoutes';
-import { errorHandler } from '../middleware/errorHandler';
+import { connectDB } from './config/database';
+import router from './routes/requestRoutes';
+import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 
