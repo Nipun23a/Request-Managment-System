@@ -2,10 +2,10 @@ import RequestModel,{IRequest} from "../models/Request";
 import { Request,Response } from "express";
 
 export const getAllRequests = async (req: Request, res: Response) => {
-    try{
+    try {
         const requests = await RequestModel.find();
         res.json(requests);
-    }catch (error){
+    } catch (error) {
         res.status(500).json({message:'Error fetching requests', error});
     }
 };
