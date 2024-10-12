@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState,  useCallback } from 'react';
 import axios from 'axios';
 import { Header } from '../organisms/Header';
 import { RequestSummary } from '../organisms/RequestSummary';
