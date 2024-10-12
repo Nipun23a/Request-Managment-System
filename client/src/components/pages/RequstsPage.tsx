@@ -28,15 +28,20 @@ export const RequestsPage: React.FC = () => {
 
   const fetchRequests = useCallback(async () => {
     try {
-      const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
+      const response = await axios.get<RequestData[]>(`https://request-managment-system-api.vercel.app/api/requests`);
       setRequests(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch requests. Please try again later.');
+      if (axios.isAxiosError(err)) {
+        console.error('Axios error:', err.response?.data, err.response?.status, err.response?.headers);
+        setError(`Failed to fetch requests: ${err.response?.data?.message || err.message}`);
+      } else {
+        console.error('Unexpected error:', err);
+        setError('An unexpected error occurred. Please try again later.');
+      }
       setLoading(false);
     }
   }, []);
-
   // Filtering logic
   const applyFilters = useCallback(() => {
     setIsSearching(true);
