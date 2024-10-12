@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Header } from '../organisms/Header';
 import { RequestSummary } from '../organisms/RequestSummary';
 import { RequestData } from '../../types/RequestTpes'; // Assuming you have a type for request data
-import { API_BASE_URL } from '../../utils/api';
+import { getApiUrl } from '../../utils/api';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,21 +16,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const fetchRequests = useCallback(async () => {
-    setLoading(true);
+    console.log('Fetching requests from:', getApiUrl('/api/requests'));
     try {
-      const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
+      const response = await axios.get(getApiUrl('/api/requests'), {
+        withCredentials: true, // Include this if you're using cookies for authentication
+      });
+      console.log('Received response:', response.data);
       setRequests(response.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch requests. Please try again later.');
-    } finally {
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', error.response?.data, error.response?.status, error.response?.headers);
+        setError(`Failed to fetch requests: ${error.response?.data?.message || error.message}`);
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
       setLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    fetchRequests();
-  }, [fetchRequests]);
 
   // Calculate request counts for different statuses
   const newRequestsCount = requests.filter(req => req.status === 'NEW').length;

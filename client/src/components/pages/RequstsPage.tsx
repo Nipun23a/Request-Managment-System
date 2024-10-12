@@ -7,7 +7,7 @@ import { DateRangePicker } from '../molecules/DateRangePicker';
 import { Dropdown } from '../molecules/Dropdown';
 import { Button } from '../atoms/TableButton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { API_BASE_URL } from '../../utils/api';
+import { getApiUrl } from '../../utils/api';
 
 export const RequestsPage: React.FC = () => {
   const [requests, setRequests] = useState<RequestData[]>([]);
@@ -26,22 +26,26 @@ export const RequestsPage: React.FC = () => {
   const statusOptions = ['NEW', 'IN_PROGRESS', 'COMPLETED', 'DELAYED', 'ESCALATED', 'ON_HOLD'];
   const priorityOptions = ['LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'EMERGENCY'];
 
-const fetchRequests = useCallback(async () => {
-  try {
-    const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
-    setRequests(response.data);
-    setLoading(false);
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      console.error('Axios error:', err.response?.data, err.response?.status, err.response?.headers);
-      setError(`Failed to fetch requests: ${err.response?.data?.message || err.message}`);
-    } else {
-      console.error('Unexpected error:', err);
-      setError('An unexpected error occurred. Please try again later.');
+  const fetchRequests = useCallback(async () => {
+    console.log('Fetching requests from:', getApiUrl('/api/requests'));
+    try {
+      const response = await axios.get(getApiUrl('/api/requests'), {
+        withCredentials: true, // Include this if you're using cookies for authentication
+      });
+      console.log('Received response:', response.data);
+      setRequests(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching requests:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', error.response?.data, error.response?.status, error.response?.headers);
+        setError(`Failed to fetch requests: ${error.response?.data?.message || error.message}`);
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
+      setLoading(false);
     }
-    setLoading(false);
-  }
-}, []);
+  }, []);
   // Filtering logic
   const applyFilters = useCallback(() => {
     setIsSearching(true);
@@ -104,22 +108,46 @@ const fetchRequests = useCallback(async () => {
   };
 
   const handleUpdateRequest = async (updatedRequest: RequestData) => {
+    console.log('Updating request:', updatedRequest);
     try {
-      const response = await axios.put(`${API_BASE_URL}/api/requests/${updatedRequest._id}`, updatedRequest);
+      const response = await axios.put(getApiUrl(`/api/requests/${updatedRequest._id}`), updatedRequest, {
+        withCredentials: true, // Include if you're using cookies for authentication
+      });
+      console.log('Update response:', response.data);
       const updatedRequests = requests.map(req => (req._id === updatedRequest._id ? response.data : req));
       setRequests(updatedRequests);
       applyFilters();
     } catch (error) {
       console.error('Error updating request:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', error.response?.data, error.response?.status, error.response?.headers);
+        // You might want to show an error message to the user here
+        // setError(`Failed to update request: ${error.response?.data?.message || error.message}`);
+      } else {
+        console.error('Unexpected error:', error);
+        // setError('An unexpected error occurred while updating the request.');
+      }
     }
   };
-  
+   
   const handleDeleteRequest = async (deleteRequest: RequestData) => {
+    console.log('Deleting request:', deleteRequest);
     try {
-      await axios.delete(`${API_BASE_URL}/api/requests/${deleteRequest._id}`);
+      const response = await axios.delete(getApiUrl(`/api/requests/${deleteRequest._id}`), {
+        withCredentials: true, // Include if you're using cookies for authentication
+      });
+      console.log('Delete response:', response.data);
       await fetchRequests();
     } catch (error) {
       console.error('Error deleting request:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', error.response?.data, error.response?.status, error.response?.headers);
+        // You might want to show an error message to the user here
+        // setError(`Failed to delete request: ${error.response?.data?.message || error.message}`);
+      } else {
+        console.error('Unexpected error:', error);
+        // setError('An unexpected error occurred while deleting the request.');
+      }
     }
   };
 
