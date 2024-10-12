@@ -26,22 +26,22 @@ export const RequestsPage: React.FC = () => {
   const statusOptions = ['NEW', 'IN_PROGRESS', 'COMPLETED', 'DELAYED', 'ESCALATED', 'ON_HOLD'];
   const priorityOptions = ['LOW', 'MEDIUM', 'HIGH', 'NORMAL', 'EMERGENCY'];
 
-  const fetchRequests = useCallback(async () => {
-    try {
-      const response = await axios.get<RequestData[]>(`https://request-managment-system-api.vercel.app/api/requests`);
-      setRequests(response.data);
-      setLoading(false);
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error('Axios error:', err.response?.data, err.response?.status, err.response?.headers);
-        setError(`Failed to fetch requests: ${err.response?.data?.message || err.message}`);
-      } else {
-        console.error('Unexpected error:', err);
-        setError('An unexpected error occurred. Please try again later.');
-      }
-      setLoading(false);
+const fetchRequests = useCallback(async () => {
+  try {
+    const response = await axios.get<RequestData[]>(`${API_BASE_URL}/api/requests`);
+    setRequests(response.data);
+    setLoading(false);
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      console.error('Axios error:', err.response?.data, err.response?.status, err.response?.headers);
+      setError(`Failed to fetch requests: ${err.response?.data?.message || err.message}`);
+    } else {
+      console.error('Unexpected error:', err);
+      setError('An unexpected error occurred. Please try again later.');
     }
-  }, []);
+    setLoading(false);
+  }
+}, []);
   // Filtering logic
   const applyFilters = useCallback(() => {
     setIsSearching(true);
