@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  'https://request-managment-system.vercel.app/',
+  'https://request-managment-system.vercel.app',
   'http://localhost:3000',
 ];
 
